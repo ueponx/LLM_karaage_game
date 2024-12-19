@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍗 唐揚げゲーム 🍗</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fff3e0;
+            color: #5c2c06;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin-top: 10px;
+        }
+        button {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin: 20px;
+        }
+        button:hover {
+            background-color: #f57c00;
+        }
+        .image-container {
+            position: relative;
+            width: 300px;
+            height: auto;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        #startImage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+        #friedChicken {
+            display: none;
+        }
+        /* 結果表示のデザイン */
+        #result {
+            font-size: 2em; /* フォントサイズを大きく */
+            font-weight: bold; /* フォントを太字に */
+            color: #d84315; /* 色を強調（濃いオレンジ） */
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍗 唐揚げゲーム 🍗</h1>
+    <p>10秒でボタンを押して唐揚げを揚げましょう！</p>
+    
+    <!-- イラスト -->
+    <div class="image-container">
+        <img src="frying_pan.png" id="fryingPan" alt="揚げているフライパン">
+        <img src="start.png" id="startImage" alt="スタート">
+        <img src="fried_chicken.png" id="friedChicken" alt="完成した唐揚げ">
+    </div>
+
+    <!-- ボタン -->
+    <button id="actionButton">揚げ始める！</button>
+
+    <!-- 結果表示 -->
+    <p id="result"></p>
+
+    <script>
+        let startTime, endTime;
+        let isFrying = false;
+
+        const actionButton = document.getElementById("actionButton");
+        const result = document.getElementById("result");
+
+        const startImage = document.getElementById("startImage");
+        const fryingPan = document.getElementById("fryingPan");
+        const friedChicken = document.getElementById("friedChicken");
+
+        actionButton.addEventListener("click", () => {
+            if (!isFrying) {
+                result.innerText = "";
+                startImage.style.display = "block";
+                fryingPan.style.display = "block";
+                friedChicken.style.display = "none";
+
+                setTimeout(() => {
+                    startImage.style.display = "none";
+                }, 1000);
+
+                startTime = new Date();
+                actionButton.textContent = "揚がった！";
+                isFrying = true;
+            } else {
+                endTime = new Date();
+                const fryTime = (endTime - startTime) / 1000;
+                const perfectTime = 10.0;
+                const difference = Math.abs(perfectTime - fryTime);
+
+                let score, comment;
+                if (difference < 0.5) {
+                    score = 100;
+                    comment = "✨ 完璧！サクサクジューシーな唐揚げです！✨";
+                } else if (difference < 1.5) {
+                    score = 80;
+                    comment = "ほぼ完璧！少し揚げすぎかも？でもおいしい！";
+                } else if (difference < 3.0) {
+                    score = 50;
+                    comment = "うーん...まあまあです。次は頑張りましょう！";
+                } else {
+                    score = 20;
+                    comment = "😅 残念...揚げすぎか生焼けです。";
+                }
+
+                result.innerHTML = `あなたの揚げ時間: <span>${fryTime.toFixed(2)}</span> 秒<br>スコア: <span>${score}</span>点<br>${comment}`;
+
+                fryingPan.style.display = "none";
+                friedChicken.style.display = "block";
+
+                actionButton.textContent = "揚げ始める！";
+                isFrying = false;
+            }
+        });
+    </script>
+</body>
+</html>
